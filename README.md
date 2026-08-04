@@ -55,7 +55,7 @@ sudo apt install python3-venv -y
 ### 2. Clone & Navigate
 
 ```bash
-git clone [https://github.com/boldybaldy/plutus.git](https://github.com/boldybaldy/plutus.git)
+git clone [https://github.com/boldybaldy/plutus-lan_hub.git](https://github.com/boldybaldy/plutus-lan_hub.git)
 cd plutus
 
 ```
