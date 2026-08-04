@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Local Network Sharing</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body data-app-version="{{ version }}">
+    <main class="app-shell">
+        <header class="topbar">
+            <h1>Local LAN Hub</h1>
+            <button type="button" id="themeToggle" class="theme-toggle" onclick="toggleTheme()">Dark Mode</button>
+        </header>
+
+        <section class="card">
+            <div class="header-flex">
+                <h2>Shared Textpad</h2>
+                <span class="ip-badge">http://{{ host_ip }}:{{ port }}</span>
+            </div>
+            <form action="/update-text" method="POST">
+                <textarea id="sharedText" name="text" placeholder="Paste code snippets, links, or text here...">{{ shared_text }}</textarea>
+                <div class="button-group">
+                    <button type="submit">Save Text</button>
+                    <button type="button" id="copyBtn" class="btn-secondary" onclick="copyToClipboard()">Copy to Clipboard</button>
+                </div>
+            </form>
+        </section>
+
+        <section class="card">
+            <div class="header-flex">
+                <h2>Upload File / Media</h2>
+                <span class="upload-hint">Drag and drop to upload</span>
+            </div>
+            <form id="uploadForm" action="/upload" method="POST" enctype="multipart/form-data">
+                <label id="dropZone" class="drop-zone" for="fileInput">
+                    <input id="fileInput" type="file" name="file" required>
+                    <div class="drop-zone-copy">
+                        <strong>Drop files here</strong>
+                        <span>or click to browse</span>
+                    </div>
+                </label>
+                <div class="button-group">
+                    <button type="submit" id="uploadBtn">Upload File</button>
+                </div>
+            </form>
+        </section>
+
+        <section class="card">
+            <div class="header-flex">
+                <h2>Available Files</h2>
+                <div class="switcher">
+                    <button type="button" id="btnList" class="view-btn" onclick="setView('list')">List</button>
+                    <button type="button" id="btnGrid" class="view-btn" onclick="setView('grid')">Grid</button>
+                </div>
+            </div>
+
+            <div id="fileContainer" class="file-container list-view">
+                {% for file in files %}
+                    {% set ext = file.split('.')[-1]|lower %}
+                    <div class="file-card">
+                        <div class="file-info">
+                            {% if ext in ['png', 'jpg', 'jpeg', 'gif', 'webp', 'svg'] %}
+                                <button
+                                    type="button"
+                                    class="preview-trigger"
+                                    data-preview-src="{{ url_for('serve_file', filename=file) }}"
+                                    data-preview-name="{{ file }}"
+                                    aria-label="Preview {{ file }}"
+                                >
+                                    <img src="{{ url_for('serve_file', filename=file) }}" class="file-preview" alt="{{ file }}" loading="lazy">
+                                </button>
+                            {% else %}
+                                <div class="file-icon file-logo" data-ext="{{ ext }}">{{ ext[:4]|upper }}</div>
+                            {% endif %}
+                            <span class="file-name" title="{{ file }}">{{ file }}</span>
+                        </div>
+                        <div class="file-actions">
+                            {% if ext in ['png', 'jpg', 'jpeg', 'gif', 'webp', 'svg'] %}
+                                <button
+                                    type="button"
+                                    class="btn-secondary"
+                                    data-preview-src="{{ url_for('serve_file', filename=file) }}"
+                                    data-preview-name="{{ file }}"
+                                >
+                                    Peek
+                                </button>
+                            {% endif %}
+                            <a class="btn" href="{{ url_for('download_file', filename=file) }}" download>Download</a>
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="empty-state">No files uploaded yet.</div>
+                {% endfor %}
+            </div>
+        </section>
+    </main>
+
+    <div id="previewModal" class="preview-modal" aria-hidden="true" role="dialog" aria-label="File preview">
+        <div class="preview-dialog">
+            <div class="preview-header">
+                <p id="previewName">Preview</p>
+                <button type="button" class="preview-close" onclick="closePreview()">Close</button>
+            </div>
+            <div class="preview-body">
+                <img id="previewImage" src="" alt="File preview">
+            </div>
+        </div>
+    </div>
+
+    <div id="toastStack" class="toast-stack" aria-live="polite" aria-atomic="true"></div>
+
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>
