@@ -123,6 +123,12 @@ h2 {
     margin-bottom: 12px;
 }
 
+.ip-badge-wrap {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+}
+
 .ip-badge {
     border-radius: 999px;
     border: 1px solid var(--line);
@@ -132,6 +138,58 @@ h2 {
     font-size: 0.82rem;
     box-shadow: var(--depth-in-1), var(--depth-in-2);
     font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    cursor: pointer;
+    transition: transform 140ms ease, border-color 140ms ease, box-shadow 140ms ease;
+}
+
+.ip-badge:hover,
+.ip-badge:focus-visible {
+    border-color: var(--accent);
+    transform: translateY(-1px);
+}
+
+.ip-qr-popover {
+    position: absolute;
+    top: calc(100% + 10px);
+    right: 0;
+    z-index: 25;
+    display: block;
+}
+
+.ip-qr-card {
+    background: linear-gradient(160deg, var(--surface), var(--surface-soft));
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    box-shadow: var(--depth-out-1), var(--depth-out-2);
+    padding: 12px;
+    min-width: 170px;
+    text-align: center;
+}
+
+.ip-qr-card p {
+    margin: 0 0 10px;
+    color: var(--text-muted);
+    font-size: 0.76rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+#ipQrImage {
+    display: block;
+    width: 150px;
+    height: 150px;
+    margin: 0 auto;
+    background: #fff;
+    border-radius: 12px;
+    padding: 8px;
+}
+
+.ip-badge-wrap:not(.is-visible) .ip-qr-popover {
+    display: none;
+}
+
+.ip-badge-wrap.is-visible .ip-qr-popover {
+    display: block;
 }
 
 textarea,

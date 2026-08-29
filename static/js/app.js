@@ -1,3 +1,52 @@
+function setupIpBadgeQr() {
+    const badgeWrap = document.getElementById('ipBadgeWrap');
+    const badge = document.getElementById('ipBadge');
+    const image = document.getElementById('ipQrImage');
+    const popover = document.getElementById('ipQrPopover');
+
+    if (!badgeWrap || !badge || !image || !popover) {
+        return;
+    }
+
+    const url = badge.dataset.ipUrl || badge.innerText.trim();
+
+    const renderQr = () => {
+        if (!url) {
+            return;
+        }
+
+        badgeWrap.classList.add('is-visible');
+        popover.hidden = false;
+        image.src = `/qr?url=${encodeURIComponent(url)}`;
+        image.alt = `QR code for ${url}`;
+    };
+
+    const hideQr = () => {
+        badgeWrap.classList.remove('is-visible');
+        popover.hidden = true;
+    };
+
+    badge.addEventListener('mouseenter', renderQr);
+    badge.addEventListener('focus', renderQr);
+    badge.addEventListener('mouseleave', hideQr);
+    badge.addEventListener('blur', hideQr);
+    badge.addEventListener('click', (event) => {
+        event.preventDefault();
+        const isVisible = badgeWrap.classList.contains('is-visible');
+        if (isVisible) {
+            hideQr();
+        } else {
+            renderQr();
+        }
+    });
+
+    document.addEventListener('click', (event) => {
+        if (!badgeWrap.contains(event.target)) {
+            hideQr();
+        }
+    });
+}
+
 function applyTheme(theme) {
     document.documentElement.setAttribute('data-theme', theme);
     localStorage.setItem('themeMode', theme);
@@ -306,6 +355,8 @@ if (uploadForm && fileInput && dropZone) {
         }
     });
 }
+
+setupIpBadgeQr();
 
 const savedTheme = localStorage.getItem('themeMode');
 if (savedTheme === 'light' || savedTheme === 'dark') {

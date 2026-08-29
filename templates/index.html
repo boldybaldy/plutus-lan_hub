@@ -16,7 +16,17 @@
         <section class="card">
             <div class="header-flex">
                 <h2>Shared Textpad</h2>
-                <span class="ip-badge">http://{{ host_ip }}:{{ port }}</span>
+                <div id="ipBadgeWrap" class="ip-badge-wrap">
+                    <button type="button" id="ipBadge" class="ip-badge" data-ip-url="http://{{ host_ip }}:{{ port }}" aria-label="Show QR code for LAN address">
+                        http://{{ host_ip }}:{{ port }}
+                    </button>
+                    <div id="ipQrPopover" class="ip-qr-popover" hidden aria-live="polite">
+                        <div class="ip-qr-card">
+                            <p>Scan to open</p>
+                            <img id="ipQrImage" src="" alt="QR code for the LAN URL" width="150" height="150">
+                        </div>
+                    </div>
+                </div>
             </div>
             <form action="/update-text" method="POST">
                 <textarea id="sharedText" name="text" placeholder="Paste code snippets, links, or text here...">{{ shared_text }}</textarea>

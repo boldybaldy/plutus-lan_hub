@@ -1,7 +1,9 @@
+import io
 import os
 import socket
 import time
-from flask import Flask, render_template, request, redirect, url_for, send_from_directory, jsonify
+import qrcode
+from flask import Flask, render_template, request, redirect, url_for, send_from_directory, jsonify, Response
 from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
@@ -46,6 +48,19 @@ def index():
 @app.route('/status')
 def status():
     return jsonify({'version': shared_data['version']})
+
+
+@app.route('/qr')
+def qr_code():
+    target = request.args.get('url', '').strip()
+    if not target:
+        return Response('Missing URL', status=400)
+
+    image = qrcode.make(target)
+    buffer = io.BytesIO()
+    image.save(buffer, format='PNG')
+    buffer.seek(0)
+    return Response(buffer.getvalue(), mimetype='image/png')
 
 
 @app.route('/update-text', methods=['POST'])
