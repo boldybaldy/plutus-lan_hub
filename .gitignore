@@ -2,3 +2,4 @@ venv/
 uploads/
 run*
 todo.txt
+__pycache__/
